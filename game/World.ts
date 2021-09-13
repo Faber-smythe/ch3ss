@@ -6,7 +6,7 @@ import Piece from '@/types/Piece'
 // import components
 import Booter from '@/game/setup/Booter'
 import Debug from '@/game/tools/Debug'
-import * as interact from '@/game/tools/Interactions'
+import { cellFromPosition } from '@/game/mechanics/MoveProvider'
 
 export default class World {
   canvas!: HTMLCanvasElement
@@ -41,13 +41,13 @@ export default class World {
 
     await Booter.loadPieces('black', this.scene, this.cells)
 
-    this.setActionManager()
+    this.setCellActionManager()
 
     Debug.showSceneAxis(8.5, this.scene)
-    Debug.showInspector(this.scene)
+    // Debug.showInspector(this.scene)
 
     // SELECTION GLOW EFFECT
-    var alpha = 0
+    let alpha = 0
     this.scene.registerBeforeRender(() => {
       alpha += 0.02;
       this.selectionLayer.blurHorizontalSize = 0.5 + Math.cos(alpha) * 0.5 + 0.6;
@@ -57,7 +57,6 @@ export default class World {
     this.engine.runRenderLoop(() => {
       this.scene.render()
     })
-    console.log(this.cells)
   }
 
 
@@ -80,17 +79,18 @@ export default class World {
     // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
 
-    light.groundColor = new BABYLON.Color3(1, 1, 1)
+    light.diffuse = new BABYLON.Color3(1, .9, .8)
+    light.groundColor = new BABYLON.Color3(.9, .9, .9)
 
     // Default intensity is 1
-    light.intensity = 2;
+    light.intensity = 1;
   }
 
-  setActionManager() {
+  setCellActionManager() {
     this.cells.forEach(cell => {
       // selection on piece.mesh
       if (cell.piece) {
-        this.setPieceActionManager(cell.piece, cell)
+        this.setPieceActionManager(cell.piece)
       }
       // hover on reachable cells
       cell.box.actionManager = new BABYLON.ActionManager(this.scene)
@@ -104,7 +104,7 @@ export default class World {
       cell.box.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickDownTrigger, (ev) => {
         if (this.selected.length === 1) {
           this.selected[0].movePieceTo(cell)
-          this.setPieceActionManager(cell.piece!, cell)
+          // this.setPieceActionManager(cell.piece!)
           this.selected[0] = cell
           this.clearSelection()
           this.clearShownCells()
@@ -124,12 +124,13 @@ export default class World {
     this.selected.forEach(cell => {
       if (!cell.piece) {
         console.error(cell)
-        throw ('Attempted a selection on the cell above but it is empty.')
+        throw ('Attempted a selection on the above cell but it is empty.')
       } else {
         this.selectionLayer.addMesh(cell.piece.mesh, BABYLON.Color3.White())
       }
     })
-    console.log(target)
+    // console.log(this.selected)
+    // console.log(target)
     this.showMoves(this.selected)
   }
 
@@ -153,10 +154,12 @@ export default class World {
   }
 
   showMoves(cells: Cell[]) {
+    // console.log(cells)
     // clear previous
     this.clearShownCells()
     cells.forEach(cell => {
       // console.log('test', cell)
+      // console.log(cell)
       const test = cell.getMoves(this.cells)
       this.reachableCells = this.reachableCells.concat(test)
     })
@@ -168,26 +171,15 @@ export default class World {
     })
   }
 
-  setPieceActionManager(piece: Piece, cell: Cell) {
+  setPieceActionManager(piece: Piece) {
     piece.mesh.actionManager = new BABYLON.ActionManager(this.scene)
-    console.log(piece, cell)
     piece.mesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickDownTrigger, (ev) => {
+      const cell = cellFromPosition(this.cells, piece.mesh.position)
       console.log(cell)
       // clear previous selection
       this.clearSelection()
       // new selection
       this.select(cell)
     }));
-  }
-
-  findCell(position: BABYLON.Vector3): Cell {
-    const result = this.cells.find(cell => {
-      cell.position = position
-    })
-    if (!result || !(result instanceof Cell)) {
-      throw ("Couldn't find a cell at this position")
-    } else {
-      return result
-    }
-  }
+  } 
 }

@@ -1,18 +1,18 @@
 import * as BABYLON from 'babylonjs'
 import Piece from '@/types/Piece'
-import * as getMovesFor from '@/game/mechanics/Moves'
+import * as MoveProvider from '@/game/mechanics/MoveProvider'
 
-type cellHolder = "black" | "white" | "empty"
+type currentFaction = "black" | "white" | "empty"
 
 export default class Cell {
   box!: BABYLON.Mesh
   position!: BABYLON.Vector3
   piece?: Piece | null
-  currently!: cellHolder
+  currently!: currentFaction
 
-  constructor(box: BABYLON.Mesh, position: BABYLON.Vector3) {
+  constructor(box: BABYLON.Mesh) {
     this.box = box
-    this.position = position
+    this.position = box.position
     this.currently = 'empty'
   }
 
@@ -57,34 +57,33 @@ export default class Cell {
     } else {
       switch (this.piece.type) {
         case 'rook':
-          return getMovesFor.rook(playField, this.position)
+          return MoveProvider.rook(playField, this.position)
           break;
         case 'bishop':
-          // return this.getBishopMoves(cell.position)
+          return MoveProvider.bishop(playField, this.position)
           return []
           break;
         case 'queen':
-          // return this.getQueenMoves(cell.position)
+          return MoveProvider.queen(playField, this.position)
           return []
           break;
         case 'king':
-          // return this.getKingMoves(cell.position)
+          return MoveProvider.king(playField, this.position)
           return []
           break;
         case 'knight':
-          // return this.getKnightMoves(cell.position)
+          return MoveProvider.knight(playField, this.position)
           return []
           break;
         case 'pawn':
-          return getMovesFor.bishop(playField, this.position)
+          return MoveProvider.pawn(playField, this.position)
           return []
           break;
         case 'hound':
-          // return this.getHoundMoves(cell.position)
+          return MoveProvider.hound(playField, this.position)
           return []
           break;
       }
     }
   }
-
 }

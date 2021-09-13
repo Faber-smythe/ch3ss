@@ -30,15 +30,15 @@ export default class Booter {
 
       parentMesh.addChild(box)
 
-      const cell = new Cell(box, new BABYLON.Vector3(x, y, z))
+      const cell = new Cell(box)
       cell.box.renderingGroupId = 1
-      cellsToReturn.push(cell)
+      const index = String(x)+String(y)+String(z)
+      cellsToReturn[index] = (cell)
 
       x++
       if (x === 9) { x = 1; z++ }
       if (z === 9) { z = 1; y++ }
     }
-
     return cellsToReturn
   }
 
@@ -47,7 +47,6 @@ export default class Booter {
       '',
       Config.GRID.path,
       'grid.glb',
-      // 'x5grid.glb',
       scene
     )
     imported.meshes[0].name = "GRID"
@@ -82,7 +81,7 @@ export default class Booter {
       frontRowBlack.push(await Booter.loadPawn(i, BLACKS, scene))
     }
     // POSITION BLACK MESHES IN THE CELLS
-    for (let xIndex = 1; xIndex < 9; xIndex++) {
+    for (let xIndex = 1; xIndex <= 8; xIndex++) {
 
       gridCells.forEach(cell => {
         if (cell.position.x === xIndex) {
