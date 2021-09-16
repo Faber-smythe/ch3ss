@@ -34,6 +34,33 @@ export default class World {
 
 
   async init() {
+    var dome = new BABYLON.PhotoDome(
+      "testdome",
+      "https://raw.githubusercontent.com/Faber-smythe/ch3ss/master/assets/space.jpg",
+      {
+          resolution: 32,
+          size: 1000
+      },
+      this.scene
+    )
+    // this.scene.createDefaultEnvironment();
+
+    // this.scene.getMeshByName("BackgroundPlane")!.dispose();
+    // const skybox = this.scene.getMeshByName("BackgroundSkybox")!;
+
+    // const backgroundMat = new BABYLON.BackgroundMaterial(
+    //   "customSkybox",
+    //   this.scene
+    // );
+    // backgroundMat.reflectionTexture = new BABYLON.CubeTexture(
+    //   "https://raw.githubusercontent.com/Faber-smythe/ch3ss/master/assets/space.env",
+    //   this.scene
+    // );
+    // backgroundMat.reflectionTexture.coordinatesMode =
+    //   BABYLON.Texture.SKYBOX_MODE;
+    // backgroundMat.reflectionBlur = 0.15;
+    // skybox.material = backgroundMat;
+
     this.setEnvironment()
     this.cells = Booter.createCells(this.scene)
 
@@ -44,7 +71,7 @@ export default class World {
     this.setCellActionManager()
 
     Debug.showSceneAxis(8.5, this.scene)
-    // Debug.showInspector(this.scene)
+    Debug.showInspector(this.scene)
 
     // SELECTION GLOW EFFECT
     let alpha = 0
@@ -75,6 +102,11 @@ export default class World {
 
     // This attaches the camera to the canvas
     camera.attachControl(this.canvas, true);
+
+    
+    
+
+
 
     // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
     const light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), this.scene);
