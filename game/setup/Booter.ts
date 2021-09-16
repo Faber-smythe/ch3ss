@@ -53,7 +53,7 @@ export default class Booter {
     imported.meshes[0].rotationQuaternion = null
     imported.meshes[0].scaling = new BABYLON.Vector3(1, 1, 1)
     const grid = imported.meshes[1] as BABYLON.Mesh
-
+    grid.isPickable = false
     grid.visibility = Config.GRID.opacity
     grid.position.x = 8.5
     grid.position.y = 0.5

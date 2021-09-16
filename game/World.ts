@@ -15,6 +15,7 @@ export default class World {
   cells!: Cell[]
   grid!: BABYLON.Mesh
   selectionLayer!: BABYLON.HighlightLayer
+  activationLayer!: BABYLON.HighlightLayer
   BLACKS!: BABYLON.Mesh
   WHITES!: BABYLON.Mesh
   selected: Cell[] = []

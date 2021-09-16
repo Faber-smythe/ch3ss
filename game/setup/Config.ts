@@ -10,7 +10,7 @@ export const Config = {
     size: 1,
   },
   GRID: {
-    opacity: 0.01,
+    opacity: 0.015,
     path: '/assets/'
   }
 }
