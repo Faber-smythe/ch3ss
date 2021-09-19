@@ -1,0 +1,10 @@
+node material :
+https://nodematerial-editor.babylonjs.com/#H1UE5H#5
+
+
+playground for material :
+https://playground.babylonjs.com/#BD5N2S#2
+https://playground.babylonjs.com/#BD5N2S#3
+https://playground.babylonjs.com/#BD5N2S#4
+https://playground.babylonjs.com/#BD5N2S#5
+https://playground.babylonjs.com/#BD5N2S#6
